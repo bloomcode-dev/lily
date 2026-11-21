@@ -61,8 +61,6 @@ body{font:16px/1.5 "JetBrains Mono",ui-monospace,monospace}
 <div id="stage">
   <canvas id="c"></canvas>
   <div id="code"><div class="mon">
-    <div class="qt"><b>QuickTime Player</b><span>File</span><span>Edit</span><span>View</span><span>Window</span><span>Help</span></div>
-    <div class="vt"><span class="ar">←&nbsp;&nbsp;→</span><span class="sr">⌕ Search</span></div>
     <div class="main">
       <div class="act"><span></span><span></span><span></span><span></span><span></span></div>
       <div class="ed">
@@ -233,8 +231,8 @@ function resize() {
   W = innerWidth; H = innerHeight;
   cv.width = W * dpr; cv.height = H * dpr;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  u = Math.min(W / 27, H / 60);
-  cx = W / 2; cy = H * 0.15 + 25.5 * u;
+  u = Math.min(W / 28, H / 60);
+  cx = W / 2 - u; cy = H * 0.2 + 22 * u;
 }
 new ResizeObserver(resize).observe(document.body); resize();
 
@@ -248,20 +246,19 @@ let sd = 23; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
 const STEM = [[0, 18], [-.6, 8], [.9, -2], [.4, -18]];
 const bez = (p, t) => { const m = 1 - t; return [0, 1].map(k => m*m*m*p[0][k] + 3*m*m*t*p[1][k] + 3*m*t*t*p[2][k] + t*t*t*p[3][k]); };
 const LILIES = [
-  { x: -4.4, y: -13.2, R: 6.0, rot: -.35, tilt: .86, at: .86 },
-  { x: 5.0, y: -11.0, R: 5.8, rot: .45, tilt: .8, at: .8 },
-  { x: -4.2, y: -5.4, R: 5.4, rot: -.7, tilt: .74, at: .68 },
-  { x: 4.4, y: -3.4, R: 5.0, rot: .8, tilt: .78, at: .62 }
+  { x: -2.4, y: -9.6, R: 6.4, rot: -.22, tilt: .92, at: .84 },
+  { x: 5.4, y: -5.2, R: 5.8, rot: .95, tilt: .6, at: .74 },
+  { x: -2.0, y: -1.0, R: 5.8, rot: -.08, tilt: .9, at: .64 }
 ];
-const BUDS = [{ x: 1.4, y: -20.5, L: 4.4, a: .15, at: .97 }, { x: -1.6, y: -18.6, L: 3.4, a: -.45, at: .92 }];
-const LEAVES = [[.06, 1], [.14, -1], [.22, 1], [.3, -1], [.38, 1], [.46, -1]];
+const BUDS = [{ x: .2, y: -16.2, L: 4.6, a: .08, at: .97 }, { x: 4.4, y: -12.6, L: 2.6, a: .55, at: .9 }];
+const LEAVES = [[.05, 1], [.13, -1], [.21, 1], [.29, -1], [.37, 1], [.45, -1], [.53, 1]];
 
 // tepal shape in local coords (pointing to -y)
 function tepalPts(len, wid, n = 22) {
   const L = [], Rr = [];
   for (let i = 0; i <= n; i++) {
     const s = i / n;
-    const w = wid * Math.sin(Math.PI * Math.pow(s, .8)) * (1 - Math.pow(s, 3) * .2);
+    const w = wid * Math.pow(Math.sin(Math.PI * Math.pow(s, .72)), 1.25) * (1 - s * s * .25);
     L.push([-w, -len * s]); Rr.push([w, -len * s]);
   }
   return { L, R: Rr };
@@ -281,13 +278,13 @@ LILIES.forEach((l, li) => {
   for (let i = 0; i < 6; i++) {
     const inner = i % 2 === 1;
     const a = i * Math.PI / 3 + (inner ? .05 : 0);
-    const len = (inner ? .96 : 1) , wid = inner ? .36 : .29;
-    const spots = Array.from({ length: 16 }, () => [(rnd() - .5) * .5, .12 + rnd() * .45, .012 + rnd() * .02]);
+    const len = (inner ? .96 : 1) , wid = inner ? .44 : .36;
+    const spots = Array.from({ length: 26 }, () => [(rnd() - .5) * .7, .1 + Math.pow(rnd(), 1.4) * .34, .008 + rnd() * .011]);
     const cloud = Array.from({ length: 46 }, () => { const s = Math.pow(rnd(), .8), w = Math.sin(Math.PI * Math.pow(s, .8)) * (rnd() * 2 - 1); return [w, s, rnd() * 6.28, rnd()]; });
     l.tep.push({ a, len, wid, inner, spots, cloud });
   }
   l.tep.sort((p, q) => (p.inner ? 1 : 0) - (q.inner ? 1 : 0));
-  l.stam = Array.from({ length: 6 }, (_, k) => ({ a: k * 1.047 + .5, len: .62 + rnd() * .12, bend: (rnd() - .5) * .3 }));
+  l.stam = Array.from({ length: 6 }, (_, k) => ({ a: k * 1.047 + .5, len: .68 + rnd() * .12, bend: (rnd() - .5) * .3 }));
 });
 
 function tepalPath(T, l, tp, R) {
@@ -351,16 +348,20 @@ function drawLilyFill(l, p) {
     const T = mk(l, tp.a);
     const [tipx, tipy] = T(0, -tp.len * R);
     const g = ctx.createLinearGradient(ox, oy, tipx, tipy);
-    g.addColorStop(0, '#9e0c3e'); g.addColorStop(.22, '#d23a72'); g.addColorStop(.5, '#f2a3c0'); g.addColorStop(.78, '#fff1f5'); g.addColorStop(1, '#ffffff');
+    g.addColorStop(0, '#b8124f'); g.addColorStop(.14, '#d9467d'); g.addColorStop(.3, '#f1a9c3'); g.addColorStop(.46, '#fde9f0'); g.addColorStop(.6, '#ffffff'); g.addColorStop(1, '#f7f6f8');
     // shadow
     ctx.save(); ctx.translate(1.5, 2.5); tepalPath(T, l, tp, R); ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fill(); ctx.restore();
     tepalPath(T, l, tp, R); ctx.fillStyle = g; ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = .8; ctx.stroke();
+    { const [ax, ay] = T(-tp.wid * R, -tp.len * R * .45), [bx, by] = T(tp.wid * R, -tp.len * R * .45);
+      const sh = ctx.createLinearGradient(ax, ay, bx, by);
+      sh.addColorStop(0, 'rgba(110,100,125,.22)'); sh.addColorStop(.45, 'rgba(255,255,255,0)'); sh.addColorStop(1, 'rgba(90,80,105,.12)');
+      tepalPath(T, l, tp, R); ctx.fillStyle = sh; ctx.fill(); }
+    ctx.strokeStyle = 'rgba(200,195,210,.7)'; ctx.lineWidth = .7; ctx.stroke();
     // midrib groove
-    ctx.strokeStyle = 'rgba(120,10,50,.45)'; ctx.lineWidth = Math.max(1, R * .025);
+    ctx.strokeStyle = 'rgba(205,60,110,.35)'; ctx.lineWidth = Math.max(1, R * .03);
     ctx.beginPath(); ctx.moveTo(...T(0, 0)); ctx.quadraticCurveTo(...T(R * .02, -tp.len * R * .4), ...T(0, -tp.len * R * .72)); ctx.stroke();
     // spots
-    ctx.fillStyle = '#7d0730';
+    ctx.fillStyle = '#9c0f45';
     for (const [sx, sy, sr] of tp.spots) {
       const s = sy, w = tp.wid * Math.sin(Math.PI * Math.pow(s, .8)) * .8;
       const [x, y] = T(sx * w * R * 2, -s * tp.len * R);
@@ -378,7 +379,7 @@ function drawLilyFill(l, p) {
     const [ex, ey] = T(s.bend * R, -L);
     ctx.strokeStyle = '#e4efc6'; ctx.lineWidth = Math.max(1, R * .022);
     ctx.beginPath(); ctx.moveTo(ox, oy); ctx.quadraticCurveTo(...T(s.bend * R * .2, -L * .6), ex, ey); ctx.stroke();
-    ctx.fillStyle = '#8a3510'; ctx.beginPath(); ctx.ellipse(ex, ey, R * .055, R * .025, s.a + l.rot, 0, 7); ctx.fill();
+    ctx.fillStyle = '#b4471a'; ctx.beginPath(); ctx.ellipse(ex, ey, R * .07, R * .03, s.a + l.rot, 0, 7); ctx.fill();
     ctx.fillStyle = 'rgba(230,120,40,.7)'; ctx.beginPath(); ctx.ellipse(ex - 1, ey - 1, R * .03, R * .012, s.a + l.rot, 0, 7); ctx.fill();
   }
   if (OPEN < .4) { ctx.globalAlpha = 1; return; }
@@ -435,13 +436,13 @@ function leaf(at, side, wire, fill) {
   if (wire <= 0) return;
   const [sx, sy] = bez(STEM, at), [nx, ny] = bez(STEM, at + .02);
   const ang = Math.atan2(ny - sy, nx - sx) + side * .62;
-  const L = u * (6.2 - at * 3) * ease(wire), Wd = u * .75;
+  const L = u * (7.4 - at * 3) * ease(wire), Wd = u * 1.25;
   ctx.save(); ctx.translate(cx + sx * u, cy + sy * u); ctx.rotate(ang);
   const path = () => { ctx.beginPath(); ctx.moveTo(0, 0); ctx.bezierCurveTo(L * .3, -Wd * side, L * .7, -Wd * .8 * side, L, side * u * .4); ctx.bezierCurveTo(L * .7, Wd * .2 * side, L * .3, Wd * .4 * side, 0, 0); };
   if (fill < 1) { ctx.shadowColor = 'rgba(110,255,90,.9)'; ctx.shadowBlur = 8; path(); ctx.strokeStyle = `rgba(140,255,120,${.9 * (1 - fill)})`; ctx.lineWidth = .9; ctx.stroke(); ctx.shadowBlur = 0; }
   if (fill > 0) {
     const g = ctx.createLinearGradient(0, -Wd, 0, Wd);
-    g.addColorStop(0, '#3e8a35'); g.addColorStop(1, '#173d16');
+    g.addColorStop(0, '#2f7a2c'); g.addColorStop(.45, '#1f5a1f'); g.addColorStop(1, '#0f3110');
     path(); ctx.globalAlpha = fill; ctx.fillStyle = g; ctx.fill();
     ctx.strokeStyle = 'rgba(170,230,150,.4)'; ctx.lineWidth = .8; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(L * .9, side * u * .3); ctx.stroke();
     ctx.globalAlpha = 1;
@@ -466,7 +467,11 @@ function scene(t) {
     ctx.strokeStyle = `rgba(255,255,255,${.35 * gl})`; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(cx - 6 * u * gl, cy + 18.4 * u); ctx.lineTo(cx + 6 * u * gl, cy + 18.4 * u); ctx.stroke();
     ctx.fillStyle = `rgba(255,255,255,${.45 * gl})`; ctx.font = `${Math.max(8, u * .38)}px "JetBrains Mono", monospace`; ctx.textAlign = 'center';
-    ctx.fillText('LILIUM ORIENTALIS · STARGAZER', cx, cy + 19.8 * u);
+    ctx.textAlign = 'left'; ctx.font = `600 ${Math.max(9, u * .5)}px "JetBrains Mono", monospace`;
+    ctx.fillStyle = `rgba(255,255,255,${.8 * gl})`; ctx.fillText('LILIUM ORIENTALIS', cx - 10.5 * u, cy - 24 * u);
+    ctx.font = `${Math.max(7, u * .3)}px "JetBrains Mono", monospace`; ctx.fillStyle = `rgba(255,255,255,${.4 * gl})`;
+    ctx.fillText('stargazer · procedural reconstruction · render 01', cx - 10.5 * u, cy - 23.1 * u);
+    ctx.textAlign = 'center';
   }
   const glowS = 1 - span(t, 8.5, 10);
   stemDraw(inout(span(t, 1.2, 3.8)), glowS);
@@ -475,8 +480,8 @@ function scene(t) {
   LILIES.forEach((l, i) => pedicel(l.x, l.y, l.at, span(t, 3.3 + i * .12, 4.3 + i * .12), glowS));
   BUDS.forEach(b => drawBud(b, span(t, 4.2, 5.2), span(t, 9, 10.6)));
   const settle = span(t, 10.5, 12);
-  [3, 2, 1, 0].forEach(i => {
-    const l = LILIES[i], d = (3 - i) * .35;
+  [2, 1, 0].forEach(i => {
+    const l = LILIES[i], d = (2 - i) * .45;
     const cloud = span(t, 4.2 + d, 6.6 + d) * 1.15;
     const wire = span(t, 5.6 + d, 7.2 + d) * (1 - span(t, 9 + d, 10.6 + d) * .9);
     const fill = ease(span(t, 8.0 + d, 10.4 + d));
