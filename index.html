@@ -74,11 +74,30 @@ body{font:16px/1.5 "JetBrains Mono",ui-monospace,monospace}
     <span id="pos" hidden></span>
   </div></div>
   <div id="cap"></div>
+  <div id="ytwrap" aria-hidden="true" style="position:absolute;left:-9999px;top:0;width:200px;height:120px;overflow:hidden;opacity:0;pointer-events:none"><div id="yt"></div></div>
   <div id="start">
     <p><span class="m">~/flowers</span> <b>❯</b> python lily.py</p>
     <button id="go" type="button"><i></i>çalıştır</button>
   </div>
 </div>
+<script>
+// music: official "The Paper Kites – Bloom" video via the YouTube player (no file hosted here)
+var ytPlayer = null, ytReady = false, ytWant = false;
+function onYouTubeIframeAPIReady() {
+  ytPlayer = new YT.Player('yt', { videoId: '8inJtTG_DuU', width: 200, height: 120,
+    playerVars: { start: 0, controls: 0, playsinline: 1, rel: 0, modestbranding: 1 },
+    events: { onReady: function () { ytReady = true; if (ytWant) startMusic(); } } });
+}
+function startMusic() {
+  ytWant = true;
+  if (!ytReady || !ytPlayer || !ytPlayer.playVideo) return;
+  try {
+    ytPlayer.unMute(); ytPlayer.setVolume(0); ytPlayer.seekTo(0, true); ytPlayer.playVideo();
+    var v = 0, iv = setInterval(function () { v += 4; ytPlayer.setVolume(Math.min(v, 80)); if (v >= 80) clearInterval(iv); }, 120);
+  } catch (e) {}
+}
+</script>
+<script src="https://www.youtube.com/iframe_api" async></script>
 <script>
 {
 const PY = String.raw`def generate_stamens_and_pistil(center, basis, scale, wire_t0, wire_t1, surf_t0, surf_t1):
@@ -558,6 +577,7 @@ function play() {
   runCode(() => { start = performance.now(); raf = requestAnimationFrame(frame); });
 }
 document.getElementById('go').addEventListener('click', () => {
+  startMusic();
   const el = document.documentElement;
   try { const r = (el.requestFullscreen || el.webkitRequestFullscreen)?.call(el); r && r.catch && r.catch(() => {}); } catch (e) {}
   startEl.style.opacity = 0; setTimeout(() => startEl.style.display = 'none', 600);
