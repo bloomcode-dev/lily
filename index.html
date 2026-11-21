@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070407">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>;)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;background:#070407;color:#f6eef0;overflow:hidden;-webkit-tap-highlight-color:transparent}
+body{font:16px/1.5 "JetBrains Mono",ui-monospace,monospace}
+#stage{position:fixed;inset:0;height:100dvh;background:#000}
+#c{position:absolute;inset:0;width:100%;height:100%}
+#start{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:#0b0a0d;padding:24px;text-align:center;transition:opacity .6s}
+#start p{margin:0;font-size:13px;color:#7d7a85}
+#start p b{color:#e2557a;font-weight:400}
+#go{min-height:52px;padding:0 28px;border-radius:10px;border:1px solid #3a3a42;background:#17161b;color:#e8e6ee;font:400 15px "JetBrains Mono",monospace;cursor:pointer;display:flex;align-items:center;gap:12px}
+#go:focus-visible{outline:2px solid #e2557a;outline-offset:3px}
+#go i{width:0;height:0;border-left:11px solid #7fd49b;border-top:7px solid transparent;border-bottom:7px solid transparent}
+#code{position:absolute;inset:calc(17vh + env(safe-area-inset-top)) 0 0 0;display:none;flex-direction:column;background:#1e1e1e;color:#d4d4d4;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;transition:opacity .9s ease;z-index:2}
+.title{display:flex;align-items:center;gap:7px;height:30px;padding:0 10px;background:#323233;font-size:11px;color:#bbb;flex:none}
+.title i{width:11px;height:11px;border-radius:50%;background:#ff5f57}.title i+i{background:#febc2e}.title i+i+i{background:#28c840}
+.title b{flex:1;text-align:center;font-weight:400;margin-right:50px}
+.main{flex:1;display:flex;min-height:0}
+.act{width:44px;background:#333;flex:none;display:flex;flex-direction:column;align-items:center;gap:18px;padding-top:12px}
+.act span{width:20px;height:20px;border:2px solid #858585;border-radius:4px;opacity:.8}.act span.on{border-color:#fff}
+.side{width:210px;background:#252526;flex:none;font-size:12px;color:#ccc;padding:8px 0}
+.side p{margin:0;padding:3px 0 3px 14px;white-space:nowrap}.side .h{font-size:11px;color:#bbb;padding-bottom:8px}.side .sel{background:#37373d;color:#fff}.side .d{color:#e2c08d}
+.ed{flex:1;display:flex;flex-direction:column;min-width:0}
+.tabs{display:flex;background:#252526;font-size:12px;flex:none;overflow:hidden}
+.tabs span{padding:8px 14px;color:#969696;border-right:1px solid #1e1e1e;white-space:nowrap}
+.tabs span.on{background:#1e1e1e;color:#fff;box-shadow:inset 0 1px #e2557a}
+.crumb{font-size:11px;color:#a0a0a0;padding:4px 14px;flex:none;white-space:nowrap;overflow:hidden}
+.body{flex:1;display:flex;min-height:0;position:relative}
+#src{flex:1;margin:0;padding:0 0 40px;font-size:clamp(10px,2.75vw,13px);line-height:1.6;white-space:pre;overflow:hidden}
+#src .ln{display:block;padding-right:12px}
+#src .ln::before{content:attr(data-n);display:inline-block;width:3.4em;padding-right:1.4em;text-align:right;color:#6e7681}
+#src .ln.cl{background:#2a2d2e}#src .ln.cl::before{color:#c6c6c6}
+.mini{width:56px;flex:none;padding:4px 6px;opacity:.55;overflow:hidden;box-shadow:-1px 0 #2b2b2b}
+.mini div{height:2px;margin:0 0 1px;border-radius:1px;background:#6a6a6a}
+.term{flex:none;height:clamp(92px,17vh,150px);border-top:1px solid #333;background:#1e1e1e;padding:6px 14px;font-size:11.5px;line-height:1.65;color:#ccc;overflow:hidden}
+.term .tt{display:flex;gap:16px;font-size:11px;color:#8a8a8a;margin-bottom:4px}.term .tt b{color:#e7e7e7;font-weight:400;box-shadow:0 1px #e2557a}
+.term .g{color:#7fd49b}.term .p{color:#e2557a}.term .y{color:#dcdcaa}.term .m{color:#8a8a8a}
+.status{flex:none;height:22px;display:flex;align-items:center;gap:14px;padding:0 10px;background:#7a1b33;color:#fff;font-size:11px;white-space:nowrap;overflow:hidden}
+.status .r{margin-left:auto;display:flex;gap:14px}
+#src .k{color:#c586c0}#src .s{color:#ce9178}#src .f{color:#dcdcaa}#src .v{color:#9cdcfe}#src .d{color:#b5cea8}#src .c{color:#6a9955;font-style:italic}#src .t{color:#4ec9b0}#src .b{color:#569cd6}
+@media(max-width:760px){.side{display:none}}
+@media(max-width:420px){.act{display:none}.mini{width:36px}.status .hide{display:none}}
+.cur{display:inline-block;width:2px;height:1.15em;background:#aeafad;vertical-align:-.22em;animation:b 1s steps(1) infinite}
+@keyframes b{50%{opacity:0}}
+#note{position:absolute;left:0;right:0;bottom:calc(max(70px,10vh) + env(safe-area-inset-bottom));padding:0 22px;text-align:center;font-family:Caveat,cursive;font-weight:500;font-size:clamp(24px,6.6vw,42px);line-height:1.2;color:#fff4f6;text-shadow:0 0 18px rgba(220,70,110,.55);text-wrap:balance}
+#note span{display:block;min-height:1.2em}
+#again{position:absolute;left:50%;bottom:calc(max(16px,3vh) + env(safe-area-inset-bottom));transform:translateX(-50%);min-height:44px;padding:0 22px;border-radius:22px;border:1px solid rgba(231,184,196,.45);background:rgba(40,10,20,.6);color:#f0c4cf;font:500 22px Caveat,cursive;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .8s}
+#again.on{opacity:1;pointer-events:auto}
+#cap{position:absolute;left:0;right:0;top:calc(9vh + env(safe-area-inset-top));z-index:4;text-align:center;padding:0 24px;font:500 clamp(15px,4.2vw,22px)/1.3 "Cormorant Garamond","Times New Roman",serif;color:#ecdf98;text-shadow:0 1px 8px rgba(0,0,0,.8);opacity:0;transition:opacity .8s;pointer-events:none}
+#cap.on{opacity:1}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c"></canvas>
+  <div id="code">
+    <div class="title"><i></i><i></i><i></i><b>lily.py — flowers</b></div>
+    <div class="main">
+      <div class="act"><span class="on"></span><span></span><span></span><span></span></div>
+      <div class="side">
+        <p class="h">GEZGİN</p>
+        <p class="d">▾ flowers</p><p class="d">&nbsp;&nbsp;▸ .venv</p><p class="d">&nbsp;&nbsp;▾ src</p>
+        <p class="sel">&nbsp;&nbsp;&nbsp;&nbsp;lily.py</p><p>&nbsp;&nbsp;&nbsp;&nbsp;petals.py</p><p>&nbsp;&nbsp;&nbsp;&nbsp;render.py</p>
+        <p>&nbsp;&nbsp;requirements.txt</p><p>&nbsp;&nbsp;README.md</p>
+      </div>
+      <div class="ed">
+        <div class="tabs"><span class="on">lily.py</span><span>petals.py</span><span>render.py</span></div>
+        <div class="crumb">flowers › lily.py</div>
+        <div class="body"><pre id="src"></pre><div class="mini" id="mini"></div></div>
+        <div class="term" id="term"></div>
+      </div>
+    </div>
+    <div class="status"><span>⎇ main*</span><span class="hide">⊘ 0 ⚠ 0</span><span class="r"><span id="pos">Sat 1, Süt 1</span><span class="hide">UTF-8</span><span>Python 3.12</span></span></div>
+  </div>
+  <div id="cap"></div>
+  <div id="start">
+    <p><span class="m">~/flowers</span> <b>❯</b> python lily.py</p>
+    <button id="go" type="button"><i></i>çalıştır</button>
+  </div>
+</div>
+<script>
+{
+const PY = String.raw`import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from dataclasses import dataclass, field
+
+# Lilium 'Stargazer' — procedural bloom
+np.random.seed(23)
+PETALS, POINTS, FRAMES = 6, 240, 360
+
+@dataclass
+class Tepal:
+    length: float
+    width: float
+    angle: float
+    curl: float = 0.35
+    spots: np.ndarray = field(default=None)
+
+    def surface(self, n=POINTS):
+        u = np.linspace(0, 1, n)
+        v = np.linspace(-1, 1, n // 8)
+        U, V = np.meshgrid(u, v)
+        w = self.width * np.sin(np.pi * U ** 0.8) * (1 - U ** 3)
+        x = V * w
+        y = self.length * U
+        z = self.curl * (U ** 2) * self.length - 0.12 * V ** 2
+        return self.rotate(x, y, z)
+
+    def rotate(self, x, y, z):
+        c, s = np.cos(self.angle), np.sin(self.angle)
+        return x * c - y * s, x * s + y * c, z
+
+    def color(self, U):
+        pink = np.array([0.82, 0.14, 0.38])
+        white = np.array([1.0, 0.98, 0.98])
+        t = np.clip(U * 1.6, 0, 1)[..., None]
+        return pink * (1 - t) + white * t
+
+
+class Lily:
+    def __init__(self, center, radius, tilt=0.8, rot=0.0):
+        self.center = np.array(center)
+        self.radius, self.tilt, self.rot = radius, tilt, rot
+        self.tepals = [
+            Tepal(radius, radius * (0.32 if i % 2 else 0.4),
+                  self.rot + i * np.pi / 3)
+            for i in range(PETALS)
+        ]
+        self.stamens = np.random.uniform(0.6, 0.8, 6) * radius
+
+    def cloud(self):
+        pts = [np.stack(t.surface(), -1).reshape(-1, 3) for t in self.tepals]
+        pts = np.concatenate(pts)
+        pts[:, 1] *= self.tilt
+        return pts + np.r_[self.center, 0]
+
+    def bloom(self, k):
+        e = 1 - (1 - np.clip(k, 0, 1)) ** 3
+        return self.cloud() * e + np.random.normal(0, 1 - e, (1, 3))
+
+
+stem = np.c_[np.sin(np.linspace(0, 1.2, 200)) * 0.4,
+             np.linspace(-24, 17, 200)]
+lilies = [
+    Lily((-3.5, -12), 6.5, 0.85, -0.3),
+    Lily((4.5, -9), 6.0, 0.80, 0.5),
+    Lily((-4.0, -1), 5.5, 0.75, -0.6),
+    Lily((3.8, 2), 5.0, 0.80, 0.7),
+]
+
+fig, ax = plt.subplots(figsize=(6, 11), facecolor="black")
+ax.set_facecolor("black"); ax.axis("off")
+glow = dict(color="#7dff6a", lw=1.2, alpha=0.9)
+
+def frame(i):
+    ax.clear(); ax.axis("off")
+    k = i / FRAMES
+    ax.plot(*stem[: int(len(stem) * min(1, k * 3))].T, **glow)
+    for n, lily in enumerate(lilies):
+        p = lily.bloom(k * 1.4 - n * 0.08)
+        ax.scatter(p[:, 0], -p[:, 1], s=0.4, c="#ff7aa8", alpha=0.7)
+    return ax,
+
+anim = FuncAnimation(fig, frame, frames=FRAMES, interval=16)
+plt.show()  # something beautiful gets compiled`;
+const CODE = PY.split('\n');
+
+const KW = /^(import|from|as|def|class|return|for|in|if|else|elif|while|with|lambda|and|or|not|None|True|False|self)$/;
+const BLUE = /^(def|class|self|None|True|False|lambda)$/;
+function hl(line) {
+  const esc = (t) => t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const ci = line.indexOf('#');
+  let code = line, com = '';
+  if (ci >= 0 && !/"/.test(line.slice(0, ci).replace(/"[^"]*"/g,''))) { code = line.slice(0, ci); com = line.slice(ci); }
+  const toks = code.match(/"[^"]*"|'[^']*'|\d+(\.\d+)?|[A-Za-z_][\w]*|\s+|./g) || [];
+  const out = toks.map((t, j) => {
+    let c = '';
+    if (t[0] === '"' || t[0] === "'") c = 's';
+    else if (/^\d/.test(t)) c = 'd';
+    else if (KW.test(t)) c = BLUE.test(t) ? 'b' : 'k';
+    else if (/^[A-Z]/.test(t)) c = 't';
+    else if (/^[a-z_]/i.test(t)) c = toks[j + 1] === '(' ? 'f' : (toks[j - 1] === '@' ? 'f' : 'v');
+    return [t, c];
+  });
+  if (com) out.push([com, 'c']);
+  return out.map(([t, c]) => [esc(t), c, t.length, t]);
+}
+const HL = CODE.map(hl);
+
+const cv = document.getElementById('c'); const ctx = cv.getContext('2d');
+const capEl = document.getElementById('cap'), startEl = document.getElementById('start');
+const codeEl = document.getElementById('code'), srcEl = document.getElementById('src'), termEl = document.getElementById('term');
+const miniEl = document.getElementById('mini'), posEl = document.getElementById('pos');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let W = 0, H = 0, u = 1, cx = 0, cy = 0, dpr = 1;
+function resize() {
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  W = innerWidth; H = innerHeight;
+  cv.width = W * dpr; cv.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  u = Math.min(W / 26, H / 60);
+  cx = W / 2; cy = H * 0.53;
+}
+new ResizeObserver(resize).observe(document.body); resize();
+
+const clamp = (v) => v < 0 ? 0 : v > 1 ? 1 : v;
+const ease = (t) => 1 - Math.pow(1 - clamp(t), 3);
+const inout = (t) => { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+const span = (t, a, b) => clamp((t - a) / (b - a));
+let sd = 23; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+
+// ── geometry (u units, origin cx, cy)
+const STEM = [[0, 25], [-.6, 12], [.9, 0], [.4, -18]];
+const bez = (p, t) => { const m = 1 - t; return [0, 1].map(k => m*m*m*p[0][k] + 3*m*m*t*p[1][k] + 3*m*t*t*p[2][k] + t*t*t*p[3][k]); };
+const LILIES = [
+  { x: -4.6, y: -11.5, R: 6.4, rot: -.35, tilt: .86, at: .82 },
+  { x: 5.2, y: -8.2, R: 6.0, rot: .45, tilt: .8, at: .74 },
+  { x: -4.8, y: -.6, R: 5.5, rot: -.7, tilt: .74, at: .55 },
+  { x: 4.6, y: 3, R: 5.0, rot: .8, tilt: .78, at: .45 }
+];
+const BUDS = [{ x: 1.4, y: -20.5, L: 4.4, a: .15, at: .97 }, { x: -1.6, y: -18.6, L: 3.4, a: -.45, at: .92 }];
+const LEAVES = [[.08, 1], [.16, -1], [.25, 1], [.34, -1], [.42, 1], [.6, -1], [.68, 1]];
+
+// tepal shape in local coords (pointing to -y)
+function tepalPts(len, wid, n = 22) {
+  const L = [], Rr = [];
+  for (let i = 0; i <= n; i++) {
+    const s = i / n;
+    const w = wid * Math.sin(Math.PI * Math.pow(s, .8)) * (1 - Math.pow(s, 3) * .2);
+    L.push([-w, -len * s]); Rr.push([w, -len * s]);
+  }
+  return { L, R: Rr };
+}
+// world transform for a lily tepal
+function mk(l, a) {
+  const cr = Math.cos(l.rot), sr = Math.sin(l.rot), ca = Math.cos(a), sa = Math.sin(a);
+  return (lx, ly) => {
+    const px = lx * ca - ly * sa, py = lx * sa + ly * ca;
+    const qy = py * l.tilt;
+    return [cx + (l.x * u) + px * cr - qy * sr, cy + (l.y * u) + px * sr + qy * cr];
+  };
+}
+// precompute per lily: tepals, spots, particle targets
+LILIES.forEach((l, li) => {
+  l.tep = [];
+  for (let i = 0; i < 6; i++) {
+    const inner = i % 2 === 1;
+    const a = i * Math.PI / 3 + (inner ? .05 : 0);
+    const len = (inner ? .96 : 1) , wid = inner ? .36 : .29;
+    const spots = Array.from({ length: 16 }, () => [(rnd() - .5) * .5, .12 + rnd() * .45, .012 + rnd() * .02]);
+    const cloud = Array.from({ length: 46 }, () => { const s = Math.pow(rnd(), .8), w = Math.sin(Math.PI * Math.pow(s, .8)) * (rnd() * 2 - 1); return [w, s, rnd() * 6.28, rnd()]; });
+    l.tep.push({ a, len, wid, inner, spots, cloud });
+  }
+  l.tep.sort((p, q) => (p.inner ? 1 : 0) - (q.inner ? 1 : 0));
+  l.stam = Array.from({ length: 6 }, (_, k) => ({ a: k * 1.047 + .5, len: .62 + rnd() * .12, bend: (rnd() - .5) * .3 }));
+});
+
+function tepalPath(T, l, tp, R) {
+  const { L, R: Rr } = tepalPts(tp.len * R, tp.wid * R);
+  ctx.beginPath();
+  ctx.moveTo(...T(0, 0));
+  for (const p of Rr) ctx.lineTo(...T(p[0], p[1]));
+  for (let i = L.length - 1; i >= 0; i--) ctx.lineTo(...T(L[i][0], L[i][1]));
+  ctx.closePath();
+}
+
+function drawLilyWire(l, p) {
+  if (p <= 0) return;
+  const R = l.R * u;
+  for (const tp of l.tep) {
+    const T = mk(l, tp.a);
+    ctx.strokeStyle = `rgba(255,120,175,${.55 * p})`; ctx.lineWidth = .7;
+    tepalPath(T, l, tp, R); ctx.stroke();
+    const { L, R: Rr } = tepalPts(tp.len * R, tp.wid * R, 10);
+    ctx.beginPath();
+    for (let i = 1; i < 10; i += 1) { ctx.moveTo(...T(L[i][0], L[i][1])); ctx.lineTo(...T(Rr[i][0], Rr[i][1])); }
+    for (let i = 2; i <= 10; i += 2) { ctx.moveTo(...T(0, 0)); ctx.lineTo(...T(Rr[i][0], Rr[i][1])); ctx.moveTo(...T(0, 0)); ctx.lineTo(...T(L[i][0], L[i][1])); }
+    ctx.moveTo(...T(0, 0)); ctx.lineTo(...T(0, -tp.len * R));
+    ctx.strokeStyle = `rgba(255,150,195,${.28 * p})`; ctx.stroke();
+    ctx.fillStyle = `rgba(255,190,220,${.8 * p})`;
+    for (let i = 0; i <= 10; i += 2) for (const q of [L[i], Rr[i]]) { const [x, y] = T(q[0], q[1]); ctx.fillRect(x - 1, y - 1, 2, 2); }
+  }
+}
+
+function drawLilyCloud(l, p, t) {
+  if (p <= 0 || p >= 1.2) return;
+  const R = l.R * u, a = 1 - span(p, .85, 1.15);
+  ctx.fillStyle = `rgba(255,140,190,${.85 * a})`;
+  for (const tp of l.tep) {
+    const T = mk(l, tp.a), w = tp.wid * R, len = tp.len * R;
+    for (const [cw, s, ang, r] of tp.cloud) {
+      const [tx, ty] = T(cw * w, -s * len);
+      const k = ease(p * 1.1 - r * .15);
+      const sx = cx + Math.cos(ang) * (W * .45) * (1 - r * .3), sy = cy + Math.sin(ang) * (H * .4);
+      const x = sx + (tx - sx) * k + Math.sin(t * 3 + ang) * (1 - k) * 6, y = sy + (ty - sy) * k;
+      ctx.fillRect(x - .8, y - .8, 1.6, 1.6);
+    }
+  }
+}
+
+function drawLilyFill(l, p) {
+  if (p <= 0) return;
+  const R = l.R * u;
+  const [ox, oy] = [cx + l.x * u, cy + l.y * u];
+  ctx.globalAlpha = p;
+  for (const tp of l.tep) {
+    const T = mk(l, tp.a);
+    const [tipx, tipy] = T(0, -tp.len * R);
+    const g = ctx.createLinearGradient(ox, oy, tipx, tipy);
+    g.addColorStop(0, '#9e0c3e'); g.addColorStop(.22, '#d23a72'); g.addColorStop(.5, '#f2a3c0'); g.addColorStop(.78, '#fff1f5'); g.addColorStop(1, '#ffffff');
+    // shadow
+    ctx.save(); ctx.translate(1.5, 2.5); tepalPath(T, l, tp, R); ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fill(); ctx.restore();
+    tepalPath(T, l, tp, R); ctx.fillStyle = g; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = .8; ctx.stroke();
+    // midrib groove
+    ctx.strokeStyle = 'rgba(120,10,50,.45)'; ctx.lineWidth = Math.max(1, R * .025);
+    ctx.beginPath(); ctx.moveTo(...T(0, 0)); ctx.quadraticCurveTo(...T(R * .02, -tp.len * R * .4), ...T(0, -tp.len * R * .72)); ctx.stroke();
+    // spots
+    ctx.fillStyle = '#7d0730';
+    for (const [sx, sy, sr] of tp.spots) {
+      const s = sy, w = tp.wid * Math.sin(Math.PI * Math.pow(s, .8)) * .8;
+      const [x, y] = T(sx * w * R * 2, -s * tp.len * R);
+      ctx.beginPath(); ctx.ellipse(x, y, sr * R, sr * R * .7, tp.a, 0, 7); ctx.fill();
+    }
+    // ruffled white edge highlight
+    ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = .6;
+    ctx.beginPath(); ctx.moveTo(...T(tp.wid * R * .5, -tp.len * R * .35)); ctx.quadraticCurveTo(...T(tp.wid * R * .55, -tp.len * R * .7), ...T(0, -tp.len * R * .98)); ctx.stroke();
+  }
+  // stamens + pistil
+  const T0 = mk(l, 0);
+  for (const s of l.stam) {
+    const T = mk(l, s.a), L = s.len * R;
+    const [ex, ey] = T(s.bend * R, -L);
+    ctx.strokeStyle = '#e4efc6'; ctx.lineWidth = Math.max(1, R * .022);
+    ctx.beginPath(); ctx.moveTo(ox, oy); ctx.quadraticCurveTo(...T(s.bend * R * .2, -L * .6), ex, ey); ctx.stroke();
+    ctx.fillStyle = '#8a3510'; ctx.beginPath(); ctx.ellipse(ex, ey, R * .055, R * .025, s.a + l.rot, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(230,120,40,.7)'; ctx.beginPath(); ctx.ellipse(ex - 1, ey - 1, R * .03, R * .012, s.a + l.rot, 0, 7); ctx.fill();
+  }
+  const [px, py] = T0(R * .05, -R * .78);
+  ctx.strokeStyle = '#cfe2a0'; ctx.lineWidth = Math.max(1.2, R * .03);
+  ctx.beginPath(); ctx.moveTo(ox, oy); ctx.quadraticCurveTo(...T0(-R * .04, -R * .4), px, py); ctx.stroke();
+  ctx.fillStyle = '#5e7f2c'; ctx.beginPath(); ctx.arc(px, py, R * .045, 0, 7); ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+function budPath(b) {
+  const [x, y] = [cx + b.x * u, cy + b.y * u], L = b.L * u;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(b.a);
+  ctx.beginPath(); ctx.moveTo(0, 0);
+  ctx.bezierCurveTo(L * .3, -L * .2, L * .28, -L * .8, 0, -L);
+  ctx.bezierCurveTo(-L * .28, -L * .8, -L * .3, -L * .2, 0, 0);
+}
+function drawBud(b, wire, fill) {
+  if (wire > 0) { budPath(b); ctx.strokeStyle = `rgba(150,255,140,${.6 * wire * (1 - fill)})`; ctx.lineWidth = .8; ctx.stroke(); ctx.restore(); }
+  if (fill > 0) {
+    budPath(b); const L = b.L * u;
+    const g = ctx.createLinearGradient(0, 0, 0, -L);
+    g.addColorStop(0, '#3f7a2e'); g.addColorStop(.5, '#a7c46a'); g.addColorStop(.85, '#e9b8c8'); g.addColorStop(1, '#d9688f');
+    ctx.globalAlpha = fill; ctx.fillStyle = g; ctx.fill();
+    ctx.strokeStyle = 'rgba(40,80,30,.5)'; ctx.lineWidth = .8; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -L * .95); ctx.stroke();
+    ctx.globalAlpha = 1; ctx.restore();
+  }
+}
+
+function stemDraw(p, glow) {
+  if (p <= 0) return;
+  ctx.save();
+  ctx.lineCap = 'round';
+  const pts = []; for (let i = 0; i <= 60 * p; i++) pts.push(bez(STEM, i / 60));
+  const path = () => { ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(cx + x * u, cy + y * u) : ctx.moveTo(cx + x * u, cy + y * u)); };
+  if (glow > 0) { ctx.shadowColor = 'rgba(110,255,90,.9)'; ctx.shadowBlur = 12 * glow; path(); ctx.strokeStyle = `rgba(140,255,120,${glow})`; ctx.lineWidth = Math.max(1.5, u * .2); ctx.stroke(); ctx.shadowBlur = 0; }
+  path(); ctx.strokeStyle = '#2f6b2a'; ctx.lineWidth = Math.max(2, u * .34); ctx.globalAlpha = 1 - glow * .6; ctx.stroke();
+  ctx.globalAlpha = 1; ctx.restore();
+}
+function pedicel(x, y, at, p, glow) {
+  if (p <= 0) return;
+  const [sx, sy] = bez(STEM, at);
+  const X0 = cx + sx * u, Y0 = cy + sy * u, X1 = cx + x * u, Y1 = cy + y * u;
+  const mx = X0 + (X1 - X0) * .3, my = Math.min(Y0, Y1) - u * 1.5;
+  ctx.save(); ctx.lineCap = 'round';
+  if (glow > 0) { ctx.shadowColor = 'rgba(110,255,90,.9)'; ctx.shadowBlur = 10 * glow; }
+  ctx.strokeStyle = glow > .3 ? `rgba(140,255,120,${glow})` : '#356f2c'; ctx.lineWidth = Math.max(1.4, u * .2);
+  ctx.beginPath(); ctx.moveTo(X0, Y0);
+  const steps = 20;
+  for (let i = 1; i <= steps * p; i++) { const t = i / steps, m = 1 - t; ctx.lineTo(m * m * X0 + 2 * m * t * mx + t * t * X1, m * m * Y0 + 2 * m * t * my + t * t * Y1); }
+  ctx.stroke(); ctx.restore();
+}
+function leaf(at, side, wire, fill) {
+  if (wire <= 0) return;
+  const [sx, sy] = bez(STEM, at), [nx, ny] = bez(STEM, at + .02);
+  const ang = Math.atan2(ny - sy, nx - sx) + side * .62;
+  const L = u * (6.2 - at * 3) * ease(wire), Wd = u * .75;
+  ctx.save(); ctx.translate(cx + sx * u, cy + sy * u); ctx.rotate(ang);
+  const path = () => { ctx.beginPath(); ctx.moveTo(0, 0); ctx.bezierCurveTo(L * .3, -Wd * side, L * .7, -Wd * .8 * side, L, side * u * .4); ctx.bezierCurveTo(L * .7, Wd * .2 * side, L * .3, Wd * .4 * side, 0, 0); };
+  if (fill < 1) { ctx.shadowColor = 'rgba(110,255,90,.9)'; ctx.shadowBlur = 8; path(); ctx.strokeStyle = `rgba(140,255,120,${.9 * (1 - fill)})`; ctx.lineWidth = .9; ctx.stroke(); ctx.shadowBlur = 0; }
+  if (fill > 0) {
+    const g = ctx.createLinearGradient(0, -Wd, 0, Wd);
+    g.addColorStop(0, '#3e8a35'); g.addColorStop(1, '#173d16');
+    path(); ctx.globalAlpha = fill; ctx.fillStyle = g; ctx.fill();
+    ctx.strokeStyle = 'rgba(170,230,150,.4)'; ctx.lineWidth = .8; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(L * .9, side * u * .3); ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+  ctx.restore();
+}
+
+const dust = Array.from({ length: 120 }, () => ({ x: rnd(), y: rnd(), p: rnd() * 6, s: rnd() * 1.2 + .3, v: rnd() * .02 }));
+function drawDust(t, a) {
+  for (const d of dust) {
+    const al = (.2 + .8 * (.5 + .5 * Math.sin(t * 2 + d.p))) * a;
+    ctx.fillStyle = `rgba(255,255,255,${al * .7})`;
+    ctx.fillRect(d.x * W, ((d.y - t * d.v) % 1 + 1) % 1 * H, d.s, d.s);
+  }
+}
+
+function scene(t) {
+  ctx.clearRect(0, 0, W, H);
+  drawDust(t, span(t, 0, 1) * (1 - .6 * span(t, 6, 8)));
+  // ground line + label
+  const gl = span(t, .6, 1.6);
+  if (gl > 0) {
+    ctx.strokeStyle = `rgba(255,255,255,${.35 * gl})`; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx - 6 * u * gl, cy + 25.4 * u); ctx.lineTo(cx + 6 * u * gl, cy + 25.4 * u); ctx.stroke();
+    ctx.fillStyle = `rgba(255,255,255,${.45 * gl})`; ctx.font = `${Math.max(8, u * .42)}px "JetBrains Mono", monospace`; ctx.textAlign = 'center';
+    ctx.fillText('LILIUM ORIENTALIS · STARGAZER', cx, cy + 26.8 * u);
+  }
+  const sg = span(t, .8, 2.8), glowS = 1 - span(t, 5.2, 7);
+  stemDraw(inout(sg), glowS);
+  LEAVES.forEach(([at, side], i) => leaf(at, side, span(t, 1.8 + i * .12, 2.8 + i * .12), span(t, 5.2 + i * .05, 6.8)));
+  BUDS.forEach(b => pedicel(b.x, b.y, b.at, span(t, 2.4, 3.2), glowS));
+  LILIES.forEach((l, i) => pedicel(l.x, l.y, l.at, span(t, 2.2 + i * .1, 3 + i * .1), glowS));
+  BUDS.forEach(b => drawBud(b, span(t, 3, 3.8), span(t, 5.6, 6.8)));
+  const order = [3, 2, 1, 0];
+  order.forEach(i => {
+    const l = LILIES[i], d = i * .15;
+    const cloud = span(t, 2.6 + d, 4.4 + d) * 1.15;
+    const wire = span(t, 3.6 + d, 4.6 + d) * (1 - span(t, 5.6 + d, 6.8 + d) * .85);
+    const fill = ease(span(t, 4.9 + d, 6.6 + d));
+    drawLilyCloud(l, cloud, t);
+    drawLilyFill(l, fill);
+    drawLilyWire(l, wire);
+  });
+}
+
+let start = 0, raf = 0;
+function frame(now) {
+  const t = reduce ? 99 : (now - start) / 1000;
+  scene(t);
+  raf = requestAnimationFrame(frame);
+}
+
+// ── code intro
+function renderCode(n) {
+  let seen = 0, html = '';
+  for (let li = 0; li < HL.length; li++) {
+    let o = '', stop = false;
+    for (const [t, c, len, raw] of HL[li]) {
+      if (seen + len <= n) { o += c ? `<span class="${c}">${t}</span>` : t; seen += len; continue; }
+      const part = raw.slice(0, n - seen).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      o += c ? `<span class="${c}">${part}</span>` : part; seen = n; stop = true; break;
+    }
+    if (stop || seen >= n) return { html: html + `<span class="ln cl" data-n="${li + 1}">${o}<span class="cur"></span></span>`, li, full: false };
+    html += `<span class="ln" data-n="${li + 1}">${o}</span>`;
+    seen++;
+  }
+  return { html, li: HL.length - 1, full: true };
+}
+miniEl.innerHTML = CODE.map(l => `<div style="width:${Math.min(100, l.trim().length * 1.6)}%;margin-left:${(l.length - l.trimStart().length) * 1.6}%"></div>`).join('');
+
+let codeRaf = 0, timers = [];
+function runCode(done) {
+  cancelAnimationFrame(codeRaf); timers.forEach(clearTimeout); timers = [];
+  codeEl.style.display = 'flex'; codeEl.style.opacity = 1;
+  capEl.textContent = 'What happens when imagination meets Python?'; capEl.classList.add('on');
+  termEl.innerHTML = '<div class="tt"><b>TERMİNAL</b><span>ÇIKTI</span><span>SORUNLAR</span></div><span class="m">~/flowers</span> <span class="p">❯</span> ';
+  if (reduce) { codeEl.style.display = 'none'; done(); return; }
+  const total = PY.length, DUR = 7000, t0 = performance.now();
+  const lh = () => parseFloat(getComputedStyle(srcEl).lineHeight) || 18;
+  const step = (now) => {
+    const n = Math.floor(total * Math.min(1, (now - t0) / DUR));
+    const r = renderCode(n);
+    srcEl.innerHTML = r.html;
+    posEl.textContent = `Sat ${r.li + 1}, Süt ${(CODE[r.li] || '').length + 1}`;
+    srcEl.scrollTop = Math.max(0, (r.li + 4) * lh() - srcEl.clientHeight);
+    if (n < total) { codeRaf = requestAnimationFrame(step); return; }
+    const base = termEl.innerHTML;
+    const out = ['python lily.py', '<br><span class="m">compiling petals…</span> 6 × 240 pts', '<br><span class="g">✓</span> render ready'];
+    out.forEach((_, i) => timers.push(setTimeout(() => { termEl.innerHTML = base + out.slice(0, i + 1).join(''); }, 280 * (i + 1))));
+    timers.push(setTimeout(() => { codeEl.style.opacity = 0; capEl.classList.remove('on'); }, 280 * out.length + 600));
+    timers.push(setTimeout(() => { codeEl.style.display = 'none'; capEl.textContent = 'Something beautiful gets compiled. 🌹'; capEl.classList.add('on'); done(); }, 280 * out.length + 1500));
+  };
+  codeRaf = requestAnimationFrame(step);
+}
+
+function play() {
+  cancelAnimationFrame(raf);
+  ctx.clearRect(0, 0, W, H);
+  runCode(() => { start = performance.now(); raf = requestAnimationFrame(frame); });
+}
+document.getElementById('go').addEventListener('click', () => {
+  const el = document.documentElement;
+  try { const r = (el.requestFullscreen || el.webkitRequestFullscreen)?.call(el); r && r.catch && r.catch(() => {}); } catch (e) {}
+  startEl.style.opacity = 0; setTimeout(() => startEl.style.display = 'none', 600);
+  play();
+});
+}
+</script>
+</body>
+</html>
