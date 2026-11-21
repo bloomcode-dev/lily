@@ -21,35 +21,33 @@ body{font:16px/1.5 "JetBrains Mono",ui-monospace,monospace}
 #go{min-height:52px;padding:0 28px;border-radius:10px;border:1px solid #3a3a42;background:#17161b;color:#e8e6ee;font:400 15px "JetBrains Mono",monospace;cursor:pointer;display:flex;align-items:center;gap:12px}
 #go:focus-visible{outline:2px solid #e2557a;outline-offset:3px}
 #go i{width:0;height:0;border-left:11px solid #7fd49b;border-top:7px solid transparent;border-bottom:7px solid transparent}
-#code{position:absolute;inset:calc(17vh + env(safe-area-inset-top)) 0 0 0;display:none;flex-direction:column;background:#1e1e1e;color:#d4d4d4;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;transition:opacity .9s ease;z-index:2}
-.title{display:flex;align-items:center;gap:7px;height:30px;padding:0 10px;background:#323233;font-size:11px;color:#bbb;flex:none}
-.title i{width:11px;height:11px;border-radius:50%;background:#ff5f57}.title i+i{background:#febc2e}.title i+i+i{background:#28c840}
-.title b{flex:1;text-align:center;font-weight:400;margin-right:50px}
+#code{position:absolute;inset:calc(17vh + env(safe-area-inset-top)) 0 0 0;display:none;perspective:1100px;transition:opacity .9s ease;z-index:2;overflow:hidden}
+#stage.codephase{background:radial-gradient(120% 60% at 60% 0%,#10106a 0%,#070733 35%,#020208 70%)}
+.mon{position:absolute;left:-4%;right:-10%;top:0;bottom:6%;display:flex;flex-direction:column;background:#111216;transform:rotateX(7deg) rotateY(-7deg) rotateZ(1.2deg);transform-origin:30% 0;filter:blur(.35px) saturate(1.1);box-shadow:0 0 60px rgba(40,60,255,.25);font-family:"JetBrains Mono",Menlo,monospace;color:#d4d4d4}
+.mon::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 30%),radial-gradient(90% 70% at 40% 40%,transparent 50%,rgba(0,0,0,.55))}
+.qt{display:flex;gap:16px;align-items:center;height:22px;padding:0 10px;background:linear-gradient(#2a8fd6,#1e6fb0);font:600 11px -apple-system,Helvetica,sans-serif;color:#eaf4ff;flex:none}
+.qt span{font-weight:500}
+.vt{display:flex;align-items:center;gap:30px;height:24px;padding:0 14px 0 30%;background:#1b1c21;font-size:11px;color:#8a8f99;flex:none}
+.vt .sr{padding:1px 40px;border:1px solid #2c2e35;border-radius:5px}
 .main{flex:1;display:flex;min-height:0}
-.act{width:44px;background:#333;flex:none;display:flex;flex-direction:column;align-items:center;gap:18px;padding-top:12px}
-.act span{width:20px;height:20px;border:2px solid #858585;border-radius:4px;opacity:.8}.act span.on{border-color:#fff}
-.side{width:210px;background:#252526;flex:none;font-size:12px;color:#ccc;padding:8px 0}
-.side p{margin:0;padding:3px 0 3px 14px;white-space:nowrap}.side .h{font-size:11px;color:#bbb;padding-bottom:8px}.side .sel{background:#37373d;color:#fff}.side .d{color:#e2c08d}
+.act{width:30px;background:#16171b;flex:none;display:flex;flex-direction:column;align-items:center;gap:16px;padding-top:12px}
+.act span{width:14px;height:14px;border:2px solid #5b5f69;border-radius:3px}
+.act span:nth-child(2){border-color:#e8a13a;border-radius:50%}
 .ed{flex:1;display:flex;flex-direction:column;min-width:0}
-.tabs{display:flex;background:#252526;font-size:12px;flex:none;overflow:hidden}
-.tabs span{padding:8px 14px;color:#969696;border-right:1px solid #1e1e1e;white-space:nowrap}
-.tabs span.on{background:#1e1e1e;color:#fff;box-shadow:inset 0 1px #e2557a}
-.crumb{font-size:11px;color:#a0a0a0;padding:4px 14px;flex:none;white-space:nowrap;overflow:hidden}
+.tabs{display:flex;background:#16171b;font-size:11.5px;flex:none}
+.tabs span{padding:7px 14px;color:#e8a13a;background:#111216;box-shadow:inset 0 1px #e8a13a}
+.tabs i{font-style:normal;color:#e8a13a;margin-left:4px}
+.crumb{font-size:11px;color:#9aa0aa;padding:4px 14px;flex:none;white-space:nowrap;overflow:hidden}
+.sticky{flex:none;font-size:clamp(10px,2.7vw,13px);line-height:1.6;white-space:pre;overflow:hidden;background:#15161b;box-shadow:0 3px 6px rgba(0,0,0,.6);display:none}
+.sticky.on{display:block}
 .body{flex:1;display:flex;min-height:0;position:relative}
-#src{flex:1;margin:0;padding:0 0 40px;font-size:clamp(10px,2.75vw,13px);line-height:1.6;white-space:pre;overflow:hidden}
-#src .ln{display:block;padding-right:12px}
-#src .ln::before{content:attr(data-n);display:inline-block;width:3.4em;padding-right:1.4em;text-align:right;color:#6e7681}
-#src .ln.cl{background:#2a2d2e}#src .ln.cl::before{color:#c6c6c6}
-.mini{width:56px;flex:none;padding:4px 6px;opacity:.55;overflow:hidden;box-shadow:-1px 0 #2b2b2b}
+#src{flex:1;margin:0;padding:0 0 40px;font-size:clamp(10px,2.7vw,13px);line-height:1.6;white-space:pre;overflow:hidden}
+#src .ln,.sticky .ln{display:block;padding-right:12px}
+#src .ln::before,.sticky .ln::before{content:attr(data-n);display:inline-block;width:3.6em;padding-right:1.6em;text-align:right;color:#5b6270}
+#src .ln.cl{background:#1a1c22}
+.mini{width:50px;flex:none;padding:4px 6px;opacity:.5;overflow:hidden}
 .mini div{height:2px;margin:0 0 1px;border-radius:1px;background:#6a6a6a}
-.term{flex:none;height:clamp(92px,17vh,150px);border-top:1px solid #333;background:#1e1e1e;padding:6px 14px;font-size:11.5px;line-height:1.65;color:#ccc;overflow:hidden}
-.term .tt{display:flex;gap:16px;font-size:11px;color:#8a8a8a;margin-bottom:4px}.term .tt b{color:#e7e7e7;font-weight:400;box-shadow:0 1px #e2557a}
-.term .g{color:#7fd49b}.term .p{color:#e2557a}.term .y{color:#dcdcaa}.term .m{color:#8a8a8a}
-.status{flex:none;height:22px;display:flex;align-items:center;gap:14px;padding:0 10px;background:#7a1b33;color:#fff;font-size:11px;white-space:nowrap;overflow:hidden}
-.status .r{margin-left:auto;display:flex;gap:14px}
-#src .k{color:#c586c0}#src .s{color:#ce9178}#src .f{color:#dcdcaa}#src .v{color:#9cdcfe}#src .d{color:#b5cea8}#src .c{color:#6a9955;font-style:italic}#src .t{color:#4ec9b0}#src .b{color:#569cd6}
-@media(max-width:760px){.side{display:none}}
-@media(max-width:420px){.act{display:none}.mini{width:36px}.status .hide{display:none}}
+#src .k,.sticky .k{color:#c586c0}#src .s{color:#ce9178}#src .f,.sticky .f{color:#dcdcaa}#src .v,.sticky .v{color:#9cdcfe}#src .d{color:#b5cea8}#src .c{color:#6a9955}#src .t{color:#4ec9b0}#src .b,.sticky .b{color:#569cd6}
 .cur{display:inline-block;width:2px;height:1.15em;background:#aeafad;vertical-align:-.22em;animation:b 1s steps(1) infinite}
 @keyframes b{50%{opacity:0}}
 #note{position:absolute;left:0;right:0;bottom:calc(max(70px,10vh) + env(safe-area-inset-bottom));padding:0 22px;text-align:center;font-family:Caveat,cursive;font-weight:500;font-size:clamp(24px,6.6vw,42px);line-height:1.2;color:#fff4f6;text-shadow:0 0 18px rgba(220,70,110,.55);text-wrap:balance}
@@ -63,25 +61,21 @@ body{font:16px/1.5 "JetBrains Mono",ui-monospace,monospace}
 <body>
 <div id="stage">
   <canvas id="c"></canvas>
-  <div id="code">
-    <div class="title"><i></i><i></i><i></i><b>lily.py — flowers</b></div>
+  <div id="code"><div class="mon">
+    <div class="qt"><b>QuickTime Player</b><span>File</span><span>Edit</span><span>View</span><span>Window</span><span>Help</span></div>
+    <div class="vt"><span class="ar">←&nbsp;&nbsp;→</span><span class="sr">⌕ Search</span></div>
     <div class="main">
-      <div class="act"><span class="on"></span><span></span><span></span><span></span></div>
-      <div class="side">
-        <p class="h">GEZGİN</p>
-        <p class="d">▾ flowers</p><p class="d">&nbsp;&nbsp;▸ .venv</p><p class="d">&nbsp;&nbsp;▾ src</p>
-        <p class="sel">&nbsp;&nbsp;&nbsp;&nbsp;lily.py</p><p>&nbsp;&nbsp;&nbsp;&nbsp;petals.py</p><p>&nbsp;&nbsp;&nbsp;&nbsp;render.py</p>
-        <p>&nbsp;&nbsp;requirements.txt</p><p>&nbsp;&nbsp;README.md</p>
-      </div>
+      <div class="act"><span></span><span></span><span></span><span></span><span></span></div>
       <div class="ed">
-        <div class="tabs"><span class="on">lily.py</span><span>petals.py</span><span>render.py</span></div>
-        <div class="crumb">flowers › lily.py</div>
+        <div class="tabs"><span class="on">◆ generate_lily_animation.py <i>1</i> ×</span></div>
+        <div class="crumb">Users › nehir › Downloads › ◆ generate_lily_animation.py › …</div>
+        <div class="sticky" id="sticky"></div>
         <div class="body"><pre id="src"></pre><div class="mini" id="mini"></div></div>
-        <div class="term" id="term"></div>
       </div>
     </div>
-    <div class="status"><span>⎇ main*</span><span class="hide">⊘ 0 ⚠ 0</span><span class="r"><span id="pos">Sat 1, Süt 1</span><span class="hide">UTF-8</span><span>Python 3.12</span></span></div>
-  </div>
+    <div class="term" id="term" hidden></div>
+    <span id="pos" hidden></span>
+  </div></div>
   <div id="cap"></div>
   <div id="start">
     <p><span class="m">~/flowers</span> <b>❯</b> python lily.py</p>
@@ -90,90 +84,120 @@ body{font:16px/1.5 "JetBrains Mono",ui-monospace,monospace}
 </div>
 <script>
 {
-const PY = String.raw`import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-from dataclasses import dataclass, field
+const PY = String.raw`def generate_stamens_and_pistil(center, basis, scale, wire_t0, wire_t1, surf_t0, surf_t1):
+    elements = []
 
-# Lilium 'Stargazer' — procedural bloom
-np.random.seed(23)
-PETALS, POINTS, FRAMES = 6, 240, 360
+    # 1. Pistil — style with a three-lobed stigma
+    Nu_s, Nv_s = 28, 10
+    us = np.linspace(0.0, 1.0, Nu_s, dtype=np.float32)
+    vs = np.linspace(0.0, 2.0 * math.pi, Nv_s, dtype=np.float32)
+    U, V = np.meshgrid(us, vs, indexing="ij")
+    theta = V
+    P_style = np.zeros((Nu_s, Nv_s, 3), dtype=np.float32)
+    C_style = np.zeros((Nu_s, Nv_s, 3), dtype=np.float32)
+    for i in range(Nu_s):
+        t = us[i]
+        lobe = 0.35 * np.maximum(0.0, np.cos(3.0 * theta[i])) * smoothstep(0.86, 1.0, t)
+        tip_close = 0.004 * scale * smoothstep(0.9, 1.0, t)
+        if t < 0.9:
+            base_r = scale * (0.018 - 0.006 * t)
+        else:
+            base_r = scale * 0.022 + sw * lobe + tip_close
+        r = np.full_like(theta[i], base_r)
+        P_style[i] = (axis_pt(t)[None, :] + r[:, None] * (np.cos(theta[i])[:, None] * n1 + np.sin(theta[i])[:, None] * n2))
+        stigma_mix = smoothstep(0.82, 0.92, t)
+        C_style[i] = (1.0 - stigma_mix) * c_green + stigma_mix * c_stigma
 
-@dataclass
-class Tepal:
-    length: float
-    width: float
-    angle: float
-    curl: float = 0.35
-    spots: np.ndarray = field(default=None)
+    P_style_world = center + P_style @ basis.T
+    elements.append(BotanicalElement(
+        kind="pistil", P=P_style_world, C=C_style, u_grid=U, v_grid=V,
+        wire_t0=wire_t0, wire_t1=wire_t1, surf_t0=surf_t0, surf_t1=surf_t1,
+        sss_strength=0.30, spec_strength=0.38, shininess=28.0,
+        wire_color=(0.75, 0.95, 0.55), wire_stride_u=6, wire_stride_v=4
+    ))
 
-    def surface(self, n=POINTS):
-        u = np.linspace(0, 1, n)
-        v = np.linspace(-1, 1, n // 8)
-        U, V = np.meshgrid(u, v)
-        w = self.width * np.sin(np.pi * U ** 0.8) * (1 - U ** 3)
-        x = V * w
-        y = self.length * U
-        z = self.curl * (U ** 2) * self.length - 0.12 * V ** 2
-        return self.rotate(x, y, z)
+    # 2. Six Curved Filaments + Versatile Pollen Anthers
+    for k in range(6):
+        az = k * (math.pi / 3.0) + 0.26
+        ca, sa = math.cos(az), math.sin(az)
+        flare = (0.27 + 0.03 * (k % 2)) * scale
+        h_tip = (0.88 + 0.04 * (k % 3)) * scale
 
-    def rotate(self, x, y, z):
-        c, s = np.cos(self.angle), np.sin(self.angle)
-        return x * c - y * s, x * s + y * c, z
+        fp0 = np.array([0.020 * scale * ca, 0.02 * scale, 0.020 * scale * sa], dtype=np.float32)
+        fp1 = np.array([0.075 * scale * ca, 0.30 * scale, 0.075 * scale * sa], dtype=np.float32)
+        fp2 = np.array([0.195 * scale * ca, 0.60 * scale, 0.195 * scale * sa], dtype=np.float32)
+        fp3 = np.array([flare * ca, h_tip, flare * sa], dtype=np.float32)
 
-    def color(self, U):
-        pink = np.array([0.82, 0.14, 0.38])
-        white = np.array([1.0, 0.98, 0.98])
-        t = np.clip(U * 1.6, 0, 1)[..., None]
-        return pink * (1 - t) + white * t
+        Nu_f, Nv_f = 22, 8
+        uf = np.linspace(0.0, 1.0, Nu_f, dtype=np.float32)
+        vf = np.linspace(-1.0, 1.0, Nv_f, dtype=np.float32)
+        Uf, Vf = np.meshgrid(uf, vf, indexing="ij")
+        th_f = (Vf + 1.0) * math.pi
+
+        fpos, ftan = eval_cubic_bezier(fp0, fp1, fp2, fp3, uf)
+        Tf = normalize_v3(ftan)
+        N1f, N2f = compute_bishop_frame(Tf)
+
+        P_fil = np.zeros((Nu_f, Nv_f, 3), dtype=np.float32)
+        C_fil = np.zeros((Nu_f, Nv_f, 3), dtype=np.float32)
+        c_fil_base = np.array([0.56, 0.80, 0.30], dtype=np.float32)
+        c_fil_tip = np.array([0.98, 0.95, 0.86], dtype=np.float32)
+
+        for i in range(Nu_f):
+            rf = scale * 0.012 * (1.0 - 0.45 * uf[i])
+            P_fil[i] = fpos[i] + rf * (np.cos(th_f[i])[:, None] * N1f[i] + np.sin(th_f[i])[:, None] * N2f[i])
+            mix = smoothstep(0.15, 0.75, uf[i])
+            C_fil[i] = (1.0 - mix) * c_fil_base + mix * c_fil_tip
+
+        P_fil_world = center + P_fil @ basis.T
+        st_delay = 0.06 * k
+        elements.append(BotanicalElement(
+            kind="filament", P=P_fil_world, C=C_fil, u_grid=Uf, v_grid=Vf,
+            wire_t0=wire_t0 + st_delay, wire_t1=wire_t1 + st_delay,
+            surf_t0=surf_t0 + st_delay, surf_t1=surf_t1 + st_delay,
+            sss_strength=0.22, spec_strength=0.30, shininess=24.0,
+            wire_color=(0.98, 0.78, 0.86), wire_stride_u=5, wire_stride_v=4
+        ))
+
+        # anther — versatile, pivots on the filament tip
+        a_len, a_rad = 0.11 * scale, 0.028 * scale
+        a_dir = normalize_v3(np.cross(Tf[-1], np.array([0.0, 1.0, 0.0], dtype=np.float32)))
+        Na, Ma = 16, 10
+        ua = np.linspace(-1.0, 1.0, Na, dtype=np.float32)
+        va = np.linspace(0.0, 2.0 * math.pi, Ma, dtype=np.float32)
+        Ua, Va = np.meshgrid(ua, va, indexing="ij")
+        prof = a_rad * np.sqrt(np.clip(1.0 - Ua ** 2, 0.0, 1.0))
+        P_ant = (fpos[-1] + Ua[..., None] * a_len * a_dir
+                 + prof[..., None] * (np.cos(Va)[..., None] * N1f[-1] + np.sin(Va)[..., None] * N2f[-1]))
+        C_ant = np.broadcast_to(np.array([0.55, 0.22, 0.08], dtype=np.float32), P_ant.shape).copy()
+        elements.append(BotanicalElement(
+            kind="anther", P=center + P_ant @ basis.T, C=C_ant, u_grid=Ua, v_grid=Va,
+            wire_t0=wire_t1 + st_delay, wire_t1=wire_t1 + 0.4 + st_delay,
+            surf_t0=surf_t1, surf_t1=surf_t1 + 0.5,
+            sss_strength=0.10, spec_strength=0.18, shininess=12.0,
+            wire_color=(1.0, 0.70, 0.40), wire_stride_u=4, wire_stride_v=3
+        ))
+
+    return elements
 
 
-class Lily:
-    def __init__(self, center, radius, tilt=0.8, rot=0.0):
-        self.center = np.array(center)
-        self.radius, self.tilt, self.rot = radius, tilt, rot
-        self.tepals = [
-            Tepal(radius, radius * (0.32 if i % 2 else 0.4),
-                  self.rot + i * np.pi / 3)
-            for i in range(PETALS)
-        ]
-        self.stamens = np.random.uniform(0.6, 0.8, 6) * radius
-
-    def cloud(self):
-        pts = [np.stack(t.surface(), -1).reshape(-1, 3) for t in self.tepals]
-        pts = np.concatenate(pts)
-        pts[:, 1] *= self.tilt
-        return pts + np.r_[self.center, 0]
-
-    def bloom(self, k):
-        e = 1 - (1 - np.clip(k, 0, 1)) ** 3
-        return self.cloud() * e + np.random.normal(0, 1 - e, (1, 3))
+def render_frame(frame_idx, elements, cam, light_dir):
+    t = frame_idx / FPS
+    img = np.zeros((H, W, 3), dtype=np.float32)
+    zbuf = np.full((H, W), np.inf, dtype=np.float32)
+    for el in sorted(elements, key=lambda e: -e.depth(cam)):
+        w = smoothstep(el.wire_t0, el.wire_t1, t)
+        s = smoothstep(el.surf_t0, el.surf_t1, t)
+        if w > 0.0:
+            draw_wireframe(img, el, cam, alpha=w * (1.0 - s))
+        if s > 0.0:
+            shade_surface(img, zbuf, el, cam, light_dir, alpha=s)
+    return add_bloom(img, strength=0.35)
 
 
-stem = np.c_[np.sin(np.linspace(0, 1.2, 200)) * 0.4,
-             np.linspace(-24, 17, 200)]
-lilies = [
-    Lily((-3.5, -12), 6.5, 0.85, -0.3),
-    Lily((4.5, -9), 6.0, 0.80, 0.5),
-    Lily((-4.0, -1), 5.5, 0.75, -0.6),
-    Lily((3.8, 2), 5.0, 0.80, 0.7),
-]
-
-fig, ax = plt.subplots(figsize=(6, 11), facecolor="black")
-ax.set_facecolor("black"); ax.axis("off")
-glow = dict(color="#7dff6a", lw=1.2, alpha=0.9)
-
-def frame(i):
-    ax.clear(); ax.axis("off")
-    k = i / FRAMES
-    ax.plot(*stem[: int(len(stem) * min(1, k * 3))].T, **glow)
-    for n, lily in enumerate(lilies):
-        p = lily.bloom(k * 1.4 - n * 0.08)
-        ax.scatter(p[:, 0], -p[:, 1], s=0.4, c="#ff7aa8", alpha=0.7)
-    return ax,
-
-anim = FuncAnimation(fig, frame, frames=FRAMES, interval=16)
-plt.show()  # something beautiful gets compiled`;
+if __name__ == "__main__":
+    lily = build_stargazer_lily(seed=23)
+    write_video("lily.mp4", lily, frames=FPS * 12)  # something beautiful gets compiled`;
 const CODE = PY.split('\n');
 
 const KW = /^(import|from|as|def|class|return|for|in|if|else|elif|while|with|lambda|and|or|not|None|True|False|self)$/;
@@ -210,8 +234,8 @@ function resize() {
   W = innerWidth; H = innerHeight;
   cv.width = W * dpr; cv.height = H * dpr;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  u = Math.min(W / 26, H / 60);
-  cx = W / 2; cy = H * 0.53;
+  u = Math.min(W / 36, H / 78);
+  cx = W / 2; cy = H * 0.5;
 }
 new ResizeObserver(resize).observe(document.body); resize();
 
@@ -225,13 +249,13 @@ let sd = 23; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
 const STEM = [[0, 25], [-.6, 12], [.9, 0], [.4, -18]];
 const bez = (p, t) => { const m = 1 - t; return [0, 1].map(k => m*m*m*p[0][k] + 3*m*m*t*p[1][k] + 3*m*t*t*p[2][k] + t*t*t*p[3][k]); };
 const LILIES = [
-  { x: -4.6, y: -11.5, R: 6.4, rot: -.35, tilt: .86, at: .82 },
-  { x: 5.2, y: -8.2, R: 6.0, rot: .45, tilt: .8, at: .74 },
-  { x: -4.8, y: -.6, R: 5.5, rot: -.7, tilt: .74, at: .55 },
-  { x: 4.6, y: 3, R: 5.0, rot: .8, tilt: .78, at: .45 }
+  { x: -4.4, y: -13.2, R: 6.0, rot: -.35, tilt: .86, at: .86 },
+  { x: 5.0, y: -11.0, R: 5.8, rot: .45, tilt: .8, at: .8 },
+  { x: -4.2, y: -5.4, R: 5.4, rot: -.7, tilt: .74, at: .68 },
+  { x: 4.4, y: -3.4, R: 5.0, rot: .8, tilt: .78, at: .62 }
 ];
 const BUDS = [{ x: 1.4, y: -20.5, L: 4.4, a: .15, at: .97 }, { x: -1.6, y: -18.6, L: 3.4, a: -.45, at: .92 }];
-const LEAVES = [[.08, 1], [.16, -1], [.25, 1], [.34, -1], [.42, 1], [.6, -1], [.68, 1]];
+const LEAVES = [[.06, 1], [.13, -1], [.2, 1], [.27, -1], [.34, 1], [.41, -1], [.48, 1], [.55, -1]];
 
 // tepal shape in local coords (pointing to -y)
 function tepalPts(len, wid, n = 22) {
@@ -470,8 +494,8 @@ function renderCode(n) {
       const part = raw.slice(0, n - seen).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       o += c ? `<span class="${c}">${part}</span>` : part; seen = n; stop = true; break;
     }
-    if (stop || seen >= n) return { html: html + `<span class="ln cl" data-n="${li + 1}">${o}<span class="cur"></span></span>`, li, full: false };
-    html += `<span class="ln" data-n="${li + 1}">${o}</span>`;
+    if (stop || seen >= n) return { html: html + `<span class="ln cl" data-n="${li + 413}">${o}<span class="cur"></span></span>`, li, full: false };
+    html += `<span class="ln" data-n="${li + 413}">${o}</span>`;
     seen++;
   }
   return { html, li: HL.length - 1, full: true };
@@ -481,11 +505,12 @@ miniEl.innerHTML = CODE.map(l => `<div style="width:${Math.min(100, l.trim().len
 let codeRaf = 0, timers = [];
 function runCode(done) {
   cancelAnimationFrame(codeRaf); timers.forEach(clearTimeout); timers = [];
-  codeEl.style.display = 'flex'; codeEl.style.opacity = 1;
-  capEl.textContent = 'What happens when imagination meets Python?'; capEl.classList.add('on');
+  codeEl.style.display = 'block'; codeEl.style.opacity = 1; document.getElementById('stage').classList.add('codephase');
+  document.getElementById('sticky').innerHTML = `<span class="ln" data-n="413">${HL[0].map(([t, c]) => c ? `<span class="${c}">${t}</span>` : t).join('')}</span>`;
+  capEl.innerHTML = 'What happens when imagination<br>meets Python?'; capEl.classList.add('on');
   termEl.innerHTML = '<div class="tt"><b>TERMİNAL</b><span>ÇIKTI</span><span>SORUNLAR</span></div><span class="m">~/flowers</span> <span class="p">❯</span> ';
   if (reduce) { codeEl.style.display = 'none'; done(); return; }
-  const total = PY.length, DUR = 7000, t0 = performance.now();
+  const total = PY.length, DUR = 6000, t0 = performance.now();
   const lh = () => parseFloat(getComputedStyle(srcEl).lineHeight) || 18;
   const step = (now) => {
     const n = Math.floor(total * Math.min(1, (now - t0) / DUR));
@@ -493,12 +518,13 @@ function runCode(done) {
     srcEl.innerHTML = r.html;
     posEl.textContent = `Sat ${r.li + 1}, Süt ${(CODE[r.li] || '').length + 1}`;
     srcEl.scrollTop = Math.max(0, (r.li + 4) * lh() - srcEl.clientHeight);
+    document.getElementById('sticky').classList.toggle('on', srcEl.scrollTop > 0);
     if (n < total) { codeRaf = requestAnimationFrame(step); return; }
     const base = termEl.innerHTML;
     const out = ['python lily.py', '<br><span class="m">compiling petals…</span> 6 × 240 pts', '<br><span class="g">✓</span> render ready'];
     out.forEach((_, i) => timers.push(setTimeout(() => { termEl.innerHTML = base + out.slice(0, i + 1).join(''); }, 280 * (i + 1))));
     timers.push(setTimeout(() => { codeEl.style.opacity = 0; capEl.classList.remove('on'); }, 280 * out.length + 600));
-    timers.push(setTimeout(() => { codeEl.style.display = 'none'; capEl.textContent = 'Something beautiful gets compiled. 🌹'; capEl.classList.add('on'); done(); }, 280 * out.length + 1500));
+    timers.push(setTimeout(() => { codeEl.style.display = 'none'; document.getElementById('stage').classList.remove('codephase'); capEl.textContent = 'Something beautiful gets compiled. 🌹'; capEl.classList.add('on'); done(); }, 280 * out.length + 1500));
   };
   codeRaf = requestAnimationFrame(step);
 }
